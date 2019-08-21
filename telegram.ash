@@ -98,16 +98,27 @@ void print_available_ltt_office_quests(){
 string ltt_boss_fight(int round, monster opp, string text){
   print("LT&T Office Boss Fight Combat Filter", "blue");
   static int[item] combat_items_used;
+  boolean funksling = have_skill($skill[Ambidextrous Funkslinging]);
   if(round == 1){
     clear(combat_items_used);
   }
   if(opp == $monster[Granny Hackleton]){
+    string use_item = "";
+    boolean second = false;
     foreach i in PASSIVE_DMG_COMBAT_ITEMS {
       if(!(combat_items_used contains i)){
         combat_items_used[i] = 1;
-        return "use 1 " + i;
+        if(!second){
+          use_item = "item i";
+          second = true;
+        } else if(funksling){
+          use_item += ", " + i;
+        } else{
+
+        }
       }
     }
+    return use_item;
   }
   return "";
 }
