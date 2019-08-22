@@ -221,8 +221,7 @@ boolean buy_one_inflatable_ltt_office(){
 
 void __print_help(){
   print_html("<b>usage</b>: telegram [help|h] difficulty\
-\
-<b>help</b>, <b>h</b> - display this usage message and exit\
+<p/><b>help</b>, <b>h</b> - display this usage message and exit\
 <b>difficulty</b> - desired quest difficulty. Case insensitive. Can be one of:\
 <ul><li>easy, 1 - do easy quest</li> \
 <li>medium, 2 - do medium quest</li>\
