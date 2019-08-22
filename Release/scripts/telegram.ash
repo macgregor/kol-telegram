@@ -260,7 +260,6 @@ void main(string args){
       case "--version":
         __print_version();
         return;
-        break;
       case "easy":
       case to_string(ACCEPT_EASY_QUEST):
         difficulty = ACCEPT_EASY_QUEST;
