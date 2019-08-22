@@ -10,6 +10,8 @@ static boolean[item] HOT_RES_EFFECT_ITEMS = $items[SPF 451 lip balm, drop of wat
 static boolean[item] SPOOKY_RES_EFFECT_ITEMS = $items[black eyedrops, lotion of stench, spooky sap, lotion of hotness, ectoplasmic orbs, marzipan skull, spooky powder];
 static boolean[skill] ELEM_RES_EFFECT_BUFFS = $skills[Elemental Saucesphere, Astral Shell];
 
+static boolean[item] STAT_BUFF_ITEMS = $items[tomato juice of powerful power, potion of temporary gr8ness, Ferrigno's Elixir of Power, philter of phorce, Trivial Avocations Cards: What?, Trivial Avocations Cards: When?, Trivial Avocations Cards: Where?, Trivial Avocations Cards: Who?]
+
 static item[string] UNUSUAL_CONSTRUCT_DISC_MAP = {
   "BE": $item[strange disc (green)],
   "JADE": $item[strange disc (green)],
@@ -50,6 +52,12 @@ static item[string] UNUSUAL_CONSTRUCT_DISC_MAP = {
   "VERMILLION" : $item[strange disc (red)],
 };
 
+static boolean[item] BLUNT_WEAPONS;
+static{
+  if(!file_to_map("data/telegram_blunt_weapons.txt", BLUNT_WEAPONS)){
+    print("telegram was unable to load the blunt weapons file. Continuing.");
+  };
+}
 
  /*
   * Boss Fight Combat Filter.
@@ -62,10 +70,14 @@ static item[string] UNUSUAL_CONSTRUCT_DISC_MAP = {
   */
 string __ltt_boss_fight_filter(int round, monster opp, string text){
   static int[item] combat_items_used;
+  static int die_1;
+  static int die_2;
   boolean funksling = have_skill($skill[Ambidextrous Funkslinging]);
 
   if(round == 1){
     clear(combat_items_used);
+    die_1 = 0;
+    die_2 = 0;
   }
   if(opp == $monster[Granny Hackleton]){
     string use_item = "";
@@ -105,6 +117,40 @@ string __ltt_boss_fight_filter(int round, monster opp, string text){
     return "item " + UNUSUAL_CONSTRUCT_DISC_MAP[color];
   }
 
+  if(opp == $monster[Snake-Eyes Glenn]){
+    print("I need the html from a round of combat from Snake-Eyes Glenn to implement smarter combat against him.");
+    print("If possible please post the html source for a round of combat with a dice roll (not round 1) to: https://github.com/macgregor/kol-telegram/issues", "red");
+  }
+
+  if(opp == $monster[Pecos Dave]){
+    matcher hit_round = create_matcher("He shoots a bunch of holes into you", text);
+    matcher reload_round = create_matcher("His pistol jams", text);
+
+    if(hit_round.find() || (my_hp() / my_maxhp()) < 0.9){
+      string to_use = "";
+      if(item_amount($item[New Age healing crystal]) > 0){
+        to_use = "item " + $item[New Age healing crystal];
+      } else{
+        print("Uhh, I'm not very smart about healing right now. You might die. Good luck!", "red");
+        return "";
+      }
+      if(funksling && item_amount($item[New Age hurting crystal]) > 0){
+        to_use += ", " + $item[New Age hurting crystal];
+      }
+      return to_use;
+    } else {
+      return "attack";
+    }
+
+
+  }
+
+  //nothing to special combat strategy for:
+  //  * $monster[Former Sheriff Dan Driscoll]
+  //  * $monster[Pharaoh Amoon-Ra Cowtep]
+  //  * $monster[Daisy the Unclean]
+  //  * $monster[Jeff the Fancy Skeleton]
+
   print("telegram boss fight filter out of actions, deferring to default CCS", "blue");
   return "";
 }
@@ -113,7 +159,7 @@ string __ltt_boss_fight_filter(int round, monster opp, string text){
  * Internal method. Prepares for and fights the LT&T Office quest boss
  * assumes the next adventure in Investigating a Plaintive Telegram will be the boss.
  */
-boolean __fight_boss(){
+boolean __fight_boss(boolean should_prepare){
 
   monster determine_boss(){
     monster boss = $monster[none];
@@ -191,9 +237,68 @@ boolean __fight_boss(){
       equip_items_maybe(PASSIVE_DMG_EQUIPMENT);
     }
 
+    if(boss == $monster[Former Sheriff Dan Driscoll]){
+      print(boss + " - most actions in combat will fail, passive damage sources and chefstaff jiggle's will work though.");
+      acquire_and_use(PASSIVE_DMG_EFFECT_ITEMS);
+      acquire_buffs(PASSIVE_DMG_EFFECT_BUFFS);
+      equip_items_maybe(PASSIVE_DMG_EQUIPMENT);
+    }
+
+    if(boss == $monster[Pharaoh Amoon-Ra Cowtep]){
+      print(boss + " - gives large debuff at start of combat, attacks twice per turn, deals spooky damage each turn, reflects spells, immune to staggers and stuns. Buff up stats before fight or funksling healing/hurting crystals.");
+      acquire_and_use(SPOOKY_RES_EFFECT_ITEMS);
+      acquire_buffs(ELEM_RES_EFFECT_BUFFS);
+      acquire_and_use(STAT_BUFF_ITEMS);
+      acquire_buffs(PASSIVE_DMG_EFFECT_BUFFS);
+    }
+
+    if(boss == $monster[Snake-Eyes Glenn]){
+      print(boss + " - has a variety of atributes each round based on two dice rolled the previous round. adjust combat tactics accordingly. See https://kol.coldfront.net/thekolwiki/index.php/Snake-Eyes_Glenn");
+      print("Boy this guy is difficult to script a battle for, I am just going to buff us way the hell up and hope for the best.");
+      acquire_and_use(STAT_BUFF_ITEMS);
+      acquire_and_use(PASSIVE_DMG_EFFECT_ITEMS);
+      acquire_buffs(PASSIVE_DMG_EFFECT_BUFFS);
+      equip_items_maybe(PASSIVE_DMG_EQUIPMENT);
+    }
+
+    if(boss == $monster[Daisy the Unclean]){
+      print(boss + " - immune to staggers and stuns, each time she hits you gain 1 adventure of a buff that gets stronger each time. Luckily she is weak. Just smack her a few times.");
+    }
+
+    if(boss == $monster[Pecos Dave]){
+      print(boss + " - immune to staggers and stuns, damage softcapped at 50, alternates between shooting you for most hp and spending a round reloading. Funksling new age healing/hurting crystals, use Shell Up on shooting rounds, cast Beanscreen.");
+      if(item_amount($item[New Age healing crystal]) < 5){
+        buy(5 - item_amount($item[New Age healing crystal]), $item[New Age healing crystal]);
+      }
+    }
+
+    /*
+     * TODO:
+     *   - improve logic determining which blunt weapon is better
+     */
+    if(boss == $monster[Jeff the Fancy Skeleton]){
+      print(boss + " - immune to staggers, has 50% physical and 70% elemental resistance, skills will fail 90% of the time, blocks combat items, immune to physical damage from non-blunt weapons. Equip blunt weapons, passive damage, lower ML.");
+      acquire_and_use(PASSIVE_DMG_EFFECT_ITEMS);
+      acquire_buffs(PASSIVE_DMG_EFFECT_BUFFS);
+      equip_items_maybe(PASSIVE_DMG_EQUIPMENT);
+      item best = $item[none];
+      foreach i in BLUNT_WEAPONS{
+        if(item_amount(i) > 0 && can_equip(i) && get_power(i) > get_power(best)){
+          best = i;
+        }
+      }
+      if(best != $item[none]){
+        equip(to_slot(best), best);
+      } else if(!(BLUNT_WEAPONS contains equipped_item($slot[weapon]))){
+        print("You might not have a blunt weapon equipped, this fight might not go well.");
+      }
+    }
+
     if(item_amount($item[Space Trip safety headphones]) > 0){
       print("Equipping Space Trip safety headphones to make the fit a bit easier.");
       equip($slot[acc3], $item[Space Trip safety headphones]);
+    } else{
+      print("Equipping Space Trip safety headphones will give you better chances of winning.");
     }
   }
 
@@ -203,7 +308,11 @@ boolean __fight_boss(){
     return false;
   }
 
-  prepare_for_trouble(boss);
+  if(should_prepare){
+    prepare_for_trouble(boss);
+  } else{
+    print("Trusting that you have already prepared yourself for this battle")
+  }
   adventure(1, $location[Investigating a Plaintive Telegram], "__ltt_boss_fight_filter");
   return true;
 }

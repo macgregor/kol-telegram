@@ -9,9 +9,9 @@ import <telegram/__telegram_boss_fight.ash>;
 boolean accept_overtime();
 int buy_all_inflatable_ltt_office();
 int buy_one_inflatable_ltt_office();
-void do_ltt_office_quest_easy();
-void do_ltt_office_quest_hard();
-void do_ltt_office_quest_medium();
+void do_ltt_office_quest_easy(boolean should_prepare_for_boss);
+void do_ltt_office_quest_hard(boolean should_prepare_for_boss);
+void do_ltt_office_quest_medium(boolean should_prepare_for_boss);
 void print_available_ltt_office_quests();
 
 boolean __page_contains(string url, string text){
@@ -75,7 +75,7 @@ int __overtime_cost(string ltt_office_page){
  *
  * returns true if it was able to complete an LT&T quest, false otherwise
  */
-boolean __do_ltt_office_quest(int difficulty){
+boolean __do_ltt_office_quest(int difficulty, boolean should_prepare_for_boss){
   if(__ltt_office_available()){
     if(!__have_telegram() || get_property("questLTTQuestByWire") == "unstarted"){
       if(__overtime_available(__visit_ltt_office()) && !accept_overtime()){
@@ -102,7 +102,7 @@ boolean __do_ltt_office_quest(int difficulty){
     }
 
     print("LT&T boss is up next.");
-    __fight_boss();
+    __fight_boss(should_prepare_for_boss);
     stage_count = get_property("lttQuestStageCount").to_int();
     current_stage = get_property("questLTTQuestByWire");
 
@@ -164,8 +164,8 @@ void print_available_ltt_office_quests(){
  *
  * returns true if the quest was completed successfully, false otherwise.
  */
-boolean do_ltt_office_quest_hard(){
-  return __do_ltt_office_quest(ACCEPT_HARD_QUEST);
+boolean do_ltt_office_quest_hard(boolean should_prepare_for_boss){
+  return __do_ltt_office_quest(ACCEPT_HARD_QUEST, should_prepare_for_boss);
 }
 
 /*
@@ -173,8 +173,8 @@ boolean do_ltt_office_quest_hard(){
  *
  * returns true if the quest was completed successfully, false otherwise.
  */
-boolean do_ltt_office_quest_medium(){
-  return __do_ltt_office_quest(ACCEPT_MEDIUM_QUEST);
+boolean do_ltt_office_quest_medium(boolean should_prepare_for_boss){
+  return __do_ltt_office_quest(ACCEPT_MEDIUM_QUEST, should_prepare_for_boss);
 }
 
 /*
@@ -182,8 +182,8 @@ boolean do_ltt_office_quest_medium(){
  *
  * returns true if the quest was completed successfully, false otherwise.
  */
-boolean do_ltt_office_quest_easy(){
-  return __do_ltt_office_quest(ACCEPT_EASY_QUEST);
+boolean do_ltt_office_quest_easy(boolean should_prepare_for_boss){
+  return __do_ltt_office_quest(ACCEPT_EASY_QUEST, should_prepare_for_boss);
 }
 
 /*
@@ -220,8 +220,11 @@ boolean buy_one_inflatable_ltt_office(){
 }
 
 void __print_help(){
-  print_html("<b>usage</b>: telegram [help|h] difficulty\
+  print_html("<b>usage</b>: telegram [help|h] difficulty [-n|--no-prep]\
 <p/><b>help</b>, <b>h</b> - display this usage message and exit\
+<b>-n</b>, <b>--no-prep</b> - by default telegram will optimize equipment and buffs before \
+the boss fight (which could be expensive and overly cautious), with this flag set, \
+the script assumes you have already set up an appropriate mood/outfit to complete the fight. \
 <b>difficulty</b> - desired quest difficulty. Case insensitive. Can be one of:\
 <ul><li>easy, 1 - do easy quest</li> \
 <li>medium, 2 - do medium quest</li>\
@@ -234,28 +237,40 @@ void main(string args){
 		return;
 	}
 
+  int difficulty = 0;
+  boolean should_prepare_for_boss = true;
+
   foreach key, argument in args.split_string(" "){
 		argument = argument.to_lower_case();
     switch(argument){
       case "help":
       case "h":
         __print_help();
-        break;
+        return;
       case "easy":
       case to_string(ACCEPT_EASY_QUEST):
-        do_ltt_office_quest_easy();
+        difficulty = ACCEPT_EASY_QUEST;
         break;
       case "medium":
       case to_string(ACCEPT_MEDIUM_QUEST):
-        do_ltt_office_quest_medium();
+        difficulty = ACCEPT_MEDIUM_QUEST;
         break;
       case "hard":
       case to_string(ACCEPT_HARD_QUEST):
-        do_ltt_office_quest_hard();
+        difficulty = ACCEPT_HARD_QUEST;
+        break;
+      case "-n":
+      case "--no-prep":
+        should_prepare_for_boss = false;
         break;
       default:
         print("Unexpected argument: " + argument, "red");
         __print_help();
     }
   }
+
+  if(difficulty < ACCEPT_EASY_QUEST || difficulty > ACCEPT_HARD_QUEST){
+    abort("Invalid quest difficulty provided: " + difficulty);
+  }
+  __do_ltt_office_quest(difficulty, should_prepare_for_boss);
 }
