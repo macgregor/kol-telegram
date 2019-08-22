@@ -293,7 +293,7 @@ void main(string args){
         should_fight_boss = false;
         break;
       case "--spend-dimes":
-        sounld_spend_dimes = true;
+        should_spend_dimes = true;
         break;
       default:
         print("Unexpected argument: " + argument, "red");
