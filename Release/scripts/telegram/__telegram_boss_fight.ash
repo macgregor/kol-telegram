@@ -1,8 +1,9 @@
+import <__telegram_data.ash>;
 
 /* Passive Damage dealing stuff, used in Granny Hackleton boss fight */
 static boolean[item] PASSIVE_DMG_COMBAT_ITEMS = $items[gas can, old school beer pull tab, cold mashed potatoes, paint bomb, crazy hobo notebook, bag of gross foreign snacks, possessed tomato, hand grenegg, Colon Annihilation Hot Sauce, jagged scrap metal, jigsaw blade, throwing fork, dinner roll, whole turkey leg, skull with a fuse in it, nastygeist];
 static boolean[item] PASSIVE_DMG_EFFECT_ITEMS = $items[monkey barf, half-digested coal, beard incense, spooky sound effects record, glowing syringe];
-static boolean[skill] PASSIVE_DMG_EFFECT_BUFFS = $skills[Jalape&ntilde;o Saucesphere, Psalm of Pointiness, Scarysauce];
+static boolean[skill] PASSIVE_DMG_EFFECT_BUFFS = $skills[Jalape&ntilde;o Saucesphere, The Psalm of Pointiness, Scarysauce];
 static boolean[item] PASSIVE_DMG_EQUIPMENT = $items[double-ice cap, cup of infinite pencils, dubious loincloth, ironic oversized sunglasses, MagiMechTech NanoMechaMech, cannonball charrrm bracelet, ant pick, tiny bowler];
 
  /*
@@ -52,11 +53,11 @@ boolean __fight_boss(){
     monster boss = $monster[none];
     int difficulty = get_property("lttQuestDifficulty").to_int();
 
-    if(difficulty == ACCEPT_EASY_QUEST){
+    if(difficulty == 1){
       boss = EASY_QUESTS[get_property("lttQuestName")];
-    } else if(difficulty == ACCEPT_MEDIUM_QUEST){
+    } else if(difficulty == 2){
       boss = MEDIUM_QUESTS[get_property("lttQuestName")];
-    } else if(difficulty == ACCEPT_HARD_QUEST){
+    } else if(difficulty == 3){
       boss = HARD_QUESTS[get_property("lttQuestName")];
     }
 
