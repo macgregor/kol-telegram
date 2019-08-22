@@ -77,7 +77,7 @@ int __overtime_cost(string ltt_office_page){
  *
  * returns true if it was able to complete an LT&T quest, false otherwise
  */
-boolean __do_ltt_office_quest(int difficulty, boolean should_prepare_for_boss){
+boolean __do_ltt_office_quest(int difficulty, boolean should_prepare_for_boss, boolean should_fight_boss){
   if(__ltt_office_available()){
     if(!__have_telegram() || get_property("questLTTQuestByWire") == "unstarted"){
       if(__overtime_available(__visit_ltt_office()) && !accept_overtime()){
@@ -95,7 +95,7 @@ boolean __do_ltt_office_quest(int difficulty, boolean should_prepare_for_boss){
     int stage_count = get_property("lttQuestStageCount").to_int();
     string current_stage = get_property("questLTTQuestByWire");
 
-    if($strings[step1, step2, step3] contains current_stage && (current_stage != "step3" || stage_count < 9)){
+    if($strings[step1, step2, step3, started] contains current_stage && (current_stage != "step3" || stage_count < 9)){
       repeat{
         adventure(1, $location[Investigating a Plaintive Telegram]);
         stage_count = get_property("lttQuestStageCount").to_int();
@@ -104,16 +104,22 @@ boolean __do_ltt_office_quest(int difficulty, boolean should_prepare_for_boss){
     }
 
     print("LT&T boss is up next.");
-    __fight_boss(should_prepare_for_boss);
-    stage_count = get_property("lttQuestStageCount").to_int();
-    current_stage = get_property("questLTTQuestByWire");
+    if(should_fight_boss){
+      __fight_boss(should_prepare_for_boss);
+      stage_count = get_property("lttQuestStageCount").to_int();
+      current_stage = get_property("questLTTQuestByWire");
 
-    if(current_stage == "step3"){
-      print("I dont think we won that fight, sorry!", "red");
-      return false;
+      if(current_stage == "step3"){
+        print("I dont think we won that fight, sorry!", "red");
+        return false;
+      } else{
+        print("Completed LT&T office quest.", "green");
+        return true;
+      }
     } else{
-      print("Completed LT&T office quest.", "green");
-      return true;
+      __print_boss_hint(__determine_boss());
+      print("When you are ready to fight the boss you can run the script again.", "green");
+      return false;
     }
   } else{
     print("LT&T Office inaccessible?", "red");
@@ -166,8 +172,8 @@ void print_available_ltt_office_quests(){
  *
  * returns true if the quest was completed successfully, false otherwise.
  */
-boolean do_ltt_office_quest_hard(boolean should_prepare_for_boss){
-  return __do_ltt_office_quest(ACCEPT_HARD_QUEST, should_prepare_for_boss);
+boolean do_ltt_office_quest_hard(boolean should_prepare_for_boss, boolean should_fight_boss){
+  return __do_ltt_office_quest(ACCEPT_HARD_QUEST, should_prepare_for_boss, should_fight_boss);
 }
 
 /*
@@ -175,8 +181,8 @@ boolean do_ltt_office_quest_hard(boolean should_prepare_for_boss){
  *
  * returns true if the quest was completed successfully, false otherwise.
  */
-boolean do_ltt_office_quest_medium(boolean should_prepare_for_boss){
-  return __do_ltt_office_quest(ACCEPT_MEDIUM_QUEST, should_prepare_for_boss);
+boolean do_ltt_office_quest_medium(boolean should_prepare_for_boss, boolean should_fight_boss){
+  return __do_ltt_office_quest(ACCEPT_MEDIUM_QUEST, should_prepare_for_boss, should_fight_boss);
 }
 
 /*
@@ -184,8 +190,8 @@ boolean do_ltt_office_quest_medium(boolean should_prepare_for_boss){
  *
  * returns true if the quest was completed successfully, false otherwise.
  */
-boolean do_ltt_office_quest_easy(boolean should_prepare_for_boss){
-  return __do_ltt_office_quest(ACCEPT_EASY_QUEST, should_prepare_for_boss);
+boolean do_ltt_office_quest_easy(boolean should_prepare_for_boss, boolean should_fight_boss){
+  return __do_ltt_office_quest(ACCEPT_EASY_QUEST, should_prepare_for_boss, should_fight_boss);
 }
 
 /*
@@ -228,12 +234,14 @@ void __print_version(){
 void __print_help(){
   __print_version();
   print("");
-  print_html("<b>usage</b>: telegram [--help|-h] [-n|--no-prep] [-v|--version] difficulty \
+  print_html("<b>usage</b>: telegram [-h|--help] [-v|--version] [--no-prep] [--no-boss] difficulty \
 <p/><b>-h</b>, <b>--help</b> - display this usage message and exit\
 <b>-v</b>, <b>--version</b> - display version and exit\
-<b>-n</b>, <b>--no-prep</b> - by default telegram will optimize equipment and buffs before \
+<b>--no-prep</b> - by default telegram will optimize equipment and buffs before \
 the boss fight (which could be expensive and overly cautious), with this flag set, \
-the script assumes you have already set up an appropriate mood/outfit to complete the fight. \
+the script assumes you have already set up an appropriate mood\/outfit to complete the fight. \
+<b>--no-boss</b> - by default telegram will try to fight the boss, you can have the script
+stop at the boss by setting this flag \
 <b>difficulty</b> - desired quest difficulty. Case insensitive. Can be one of:\
 <ul><li>easy, 1 - do easy quest</li> \
 <li>medium, 2 - do medium quest</li>\
@@ -248,6 +256,7 @@ void main(string args){
 
   int difficulty = 0;
   boolean should_prepare_for_boss = true;
+  boolean should_fight_boss = true;
 
   foreach key, argument in args.split_string(" "){
 		argument = argument.to_lower_case();
@@ -272,9 +281,11 @@ void main(string args){
       case to_string(ACCEPT_HARD_QUEST):
         difficulty = ACCEPT_HARD_QUEST;
         break;
-      case "-n":
       case "--no-prep":
         should_prepare_for_boss = false;
+        break;
+      case "--no-boss":
+        should_fight_boss = false;
         break;
       default:
         print("Unexpected argument: " + argument, "red");
@@ -287,5 +298,5 @@ void main(string args){
   if(difficulty < ACCEPT_EASY_QUEST || difficulty > ACCEPT_HARD_QUEST){
     abort("Invalid quest difficulty provided: " + difficulty);
   }
-  __do_ltt_office_quest(difficulty, should_prepare_for_boss);
+  __do_ltt_office_quest(difficulty, should_prepare_for_boss, should_fight_boss);
 }

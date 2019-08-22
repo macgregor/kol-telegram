@@ -114,7 +114,11 @@ string __ltt_boss_fight_filter(int round, monster opp, string text){
       abort("Unable to determine which disc to use, see: https://kol.coldfront.net/thekolwiki/index.php/Unusual_construct");
     }
 
-    return "item " + UNUSUAL_CONSTRUCT_DISC_MAP[color];
+    string to_use = "item " + UNUSUAL_CONSTRUCT_DISC_MAP[color];
+    if(funksling && item_amount($item[New Age hurting crystal]) > 0){
+      to_use += ', ' + $item[New Age hurting crystal];
+    }
+    return to_use;
   }
 
   if(opp == $monster[Snake-Eyes Glenn]){
@@ -141,8 +145,6 @@ string __ltt_boss_fight_filter(int round, monster opp, string text){
     } else {
       return "attack";
     }
-
-
   }
 
   //nothing to special combat strategy for:
@@ -155,26 +157,64 @@ string __ltt_boss_fight_filter(int round, monster opp, string text){
   return "";
 }
 
+monster __determine_boss(){
+  monster boss = $monster[none];
+  int difficulty = get_property("lttQuestDifficulty").to_int();
+
+  if(difficulty == ACCEPT_EASY_QUEST){
+    boss = EASY_QUESTS[get_property("lttQuestName")];
+  } else if(difficulty == ACCEPT_MEDIUM_QUEST){
+    boss = MEDIUM_QUESTS[get_property("lttQuestName")];
+  } else if(difficulty == ACCEPT_HARD_QUEST){
+    boss = HARD_QUESTS[get_property("lttQuestName")];
+  }
+
+  return boss;
+}
+
+void __print_boss_hint(monster boss){
+  if(boss == $monster[Granny Hackleton]){
+    print(boss + " - blocks attacks, skills, familiar actions and can only use combat items once each. Use buffs, equipment and items that deal passive damage over time.");
+  }
+
+  if(boss == $monster[Clara]){
+    print(boss + " - damage softcapped at 500, cannot be staggers, blocks combat items, deals spooky and hot damage each round. Buff hot and spooky res to survive, fight with regular attacks or skills.");
+  }
+
+  if(boss == $monster[Unusual construct]){
+    print(boss + " - deals hot damage each round, construct says something each round, the second word indicates what disc you need to use to survive the round. Without funkslinging you have to rely on passive damage to kill it.");
+  }
+
+  if(boss == $monster[Former Sheriff Dan Driscoll]){
+    print(boss + " - most actions in combat will fail, passive damage sources and chefstaff jiggle's will work though.");
+  }
+
+  if(boss == $monster[Pharaoh Amoon-Ra Cowtep]){
+    print(boss + " - gives large debuff at start of combat, attacks twice per turn, deals spooky damage each turn, reflects spells, immune to staggers and stuns. Buff up stats before fight or funksling healing/hurting crystals.");
+  }
+
+  if(boss == $monster[Snake-Eyes Glenn]){
+    print(boss + " - has a variety of atributes each round based on two dice rolled the previous round. adjust combat tactics accordingly. See https://kol.coldfront.net/thekolwiki/index.php/Snake-Eyes_Glenn");
+  }
+
+  if(boss == $monster[Daisy the Unclean]){
+    print(boss + " - immune to staggers and stuns, each time she hits you gain 1 adventure of a buff that gets stronger each time. Luckily she is weak. Just smack her a few times.");
+  }
+
+  if(boss == $monster[Pecos Dave]){
+    print(boss + " - immune to staggers and stuns, damage softcapped at 50, alternates between shooting you for most hp and spending a round reloading. Funksling new age healing/hurting crystals, use Shell Up on shooting rounds, cast Beanscreen.");
+  }
+
+  if(boss == $monster[Jeff the Fancy Skeleton]){
+    print(boss + " - immune to staggers, has 50% physical and 70% elemental resistance, skills will fail 90% of the time, blocks combat items, immune to physical damage from non-blunt weapons. Equip blunt weapons, passive damage, lower ML.");
+  }
+}
+
 /*
  * Internal method. Prepares for and fights the LT&T Office quest boss
  * assumes the next adventure in Investigating a Plaintive Telegram will be the boss.
  */
 boolean __fight_boss(boolean should_prepare){
-
-  monster determine_boss(){
-    monster boss = $monster[none];
-    int difficulty = get_property("lttQuestDifficulty").to_int();
-
-    if(difficulty == ACCEPT_EASY_QUEST){
-      boss = EASY_QUESTS[get_property("lttQuestName")];
-    } else if(difficulty == ACCEPT_MEDIUM_QUEST){
-      boss = MEDIUM_QUESTS[get_property("lttQuestName")];
-    } else if(difficulty == ACCEPT_HARD_QUEST){
-      boss = HARD_QUESTS[get_property("lttQuestName")];
-    }
-
-    return boss;
-  }
 
   void acquire_and_use(boolean[item] item_array){
     foreach i in item_array{
@@ -216,7 +256,6 @@ boolean __fight_boss(boolean should_prepare){
   void prepare_for_trouble(monster boss){
     print("Preparing to fight LT&T quest boss: " + boss, "blue");
     if(boss == $monster[Granny Hackleton]){
-      print(boss + " - blocks attacks, skills, familiar actions and can only use combat items once each. Use buffs, equipment and items that deal passive damage over time.");
       acquire_items(PASSIVE_DMG_COMBAT_ITEMS);
       acquire_and_use(PASSIVE_DMG_EFFECT_ITEMS);
       acquire_buffs(PASSIVE_DMG_EFFECT_BUFFS);
@@ -224,28 +263,31 @@ boolean __fight_boss(boolean should_prepare){
     }
 
     if(boss == $monster[Clara]){
-      print(boss + " - damage softcapped at 500, cannot be staggers, blocks combat items, deals spooky and hot damage each round. Buff hot and spooky res to survive, fight with regular attacks or skills.");
       acquire_and_use(HOT_RES_EFFECT_ITEMS);
       acquire_and_use(SPOOKY_RES_EFFECT_ITEMS);
       acquire_buffs(ELEM_RES_EFFECT_BUFFS);
     }
 
     if(boss == $monster[Unusual construct]){
-      print(boss + " - deals hot damage each round, construct says something each round, the second word indicates what disc you need to use to survive the round. Without funkslinging you have to rely on passive damage to kill it.");
       acquire_and_use(PASSIVE_DMG_EFFECT_ITEMS);
       acquire_buffs(PASSIVE_DMG_EFFECT_BUFFS);
       equip_items_maybe(PASSIVE_DMG_EQUIPMENT);
+      if(!have_skill($skill[Ambidextrous Funkslinging])){
+        print("May have troble beating boss without Ambidextrous Funkslinging, if so boost passive damage as much as possible and try again.");
+      } else{
+        if(item_amount($item[New Age hurting crystal]) < 30){
+          buy(30-item_amount($item[New Age hurting crystal]), $item[New Age hurting crystal]);
+        }
+      }
     }
 
     if(boss == $monster[Former Sheriff Dan Driscoll]){
-      print(boss + " - most actions in combat will fail, passive damage sources and chefstaff jiggle's will work though.");
       acquire_and_use(PASSIVE_DMG_EFFECT_ITEMS);
       acquire_buffs(PASSIVE_DMG_EFFECT_BUFFS);
       equip_items_maybe(PASSIVE_DMG_EQUIPMENT);
     }
 
     if(boss == $monster[Pharaoh Amoon-Ra Cowtep]){
-      print(boss + " - gives large debuff at start of combat, attacks twice per turn, deals spooky damage each turn, reflects spells, immune to staggers and stuns. Buff up stats before fight or funksling healing/hurting crystals.");
       acquire_and_use(SPOOKY_RES_EFFECT_ITEMS);
       acquire_buffs(ELEM_RES_EFFECT_BUFFS);
       acquire_and_use(STAT_BUFF_ITEMS);
@@ -253,7 +295,6 @@ boolean __fight_boss(boolean should_prepare){
     }
 
     if(boss == $monster[Snake-Eyes Glenn]){
-      print(boss + " - has a variety of atributes each round based on two dice rolled the previous round. adjust combat tactics accordingly. See https://kol.coldfront.net/thekolwiki/index.php/Snake-Eyes_Glenn");
       print("Boy this guy is difficult to script a battle for, I am just going to buff us way the hell up and hope for the best.");
       acquire_and_use(STAT_BUFF_ITEMS);
       acquire_and_use(PASSIVE_DMG_EFFECT_ITEMS);
@@ -262,11 +303,10 @@ boolean __fight_boss(boolean should_prepare){
     }
 
     if(boss == $monster[Daisy the Unclean]){
-      print(boss + " - immune to staggers and stuns, each time she hits you gain 1 adventure of a buff that gets stronger each time. Luckily she is weak. Just smack her a few times.");
+      // no prep for now
     }
 
     if(boss == $monster[Pecos Dave]){
-      print(boss + " - immune to staggers and stuns, damage softcapped at 50, alternates between shooting you for most hp and spending a round reloading. Funksling new age healing/hurting crystals, use Shell Up on shooting rounds, cast Beanscreen.");
       if(item_amount($item[New Age healing crystal]) < 5){
         buy(5 - item_amount($item[New Age healing crystal]), $item[New Age healing crystal]);
       }
@@ -277,7 +317,6 @@ boolean __fight_boss(boolean should_prepare){
      *   - improve logic determining which blunt weapon is better
      */
     if(boss == $monster[Jeff the Fancy Skeleton]){
-      print(boss + " - immune to staggers, has 50% physical and 70% elemental resistance, skills will fail 90% of the time, blocks combat items, immune to physical damage from non-blunt weapons. Equip blunt weapons, passive damage, lower ML.");
       acquire_and_use(PASSIVE_DMG_EFFECT_ITEMS);
       acquire_buffs(PASSIVE_DMG_EFFECT_BUFFS);
       equip_items_maybe(PASSIVE_DMG_EQUIPMENT);
@@ -302,12 +341,13 @@ boolean __fight_boss(boolean should_prepare){
     }
   }
 
-  monster boss = determine_boss();
+  monster boss = __determine_boss();
   if(boss == $monster[none]){
     print("Not sure who the boss is, you're on your own partner.", "red");
     return false;
   }
 
+  __print_boss_hint(boss);
   if(should_prepare){
     prepare_for_trouble(boss);
   } else{
