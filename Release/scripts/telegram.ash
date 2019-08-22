@@ -77,55 +77,61 @@ int __overtime_cost(string ltt_office_page){
  *
  * returns true if it was able to complete an LT&T quest, false otherwise
  */
-boolean __do_ltt_office_quest(int difficulty, boolean should_prepare_for_boss, boolean should_fight_boss){
-  if(__ltt_office_available()){
-    if(!__have_telegram() || get_property("questLTTQuestByWire") == "unstarted"){
-      if(__overtime_available(__visit_ltt_office()) && !accept_overtime()){
-        print("Wasnt able to take on overtime quest", "red");
-        return false;
-      }
-      __visit_ltt_office();
-      run_choice(difficulty);
-    }
-    if(!__have_telegram()){
-      print("We should have a plaintive telegram by now, something is wrong.", "red");
-      return false;
-    }
+ boolean __do_ltt_office_quest(int difficulty, boolean should_prepare_for_boss, boolean should_fight_boss){
+   if(__ltt_office_available()){
+     cli_execute("refresh inv");
+     if(!__have_telegram() || get_property("questLTTQuestByWire") == "unstarted"){
+       if(__overtime_available(__visit_ltt_office()) && !accept_overtime()){
+         print("Wasnt able to take on overtime quest", "red");
+         return false;
+       }
+       if(__ltt_quests_available(__visit_ltt_office())){
+         print("Accepting quest");
+         run_choice(difficulty);
+       } else{
+         print("There dont seem to be any telegram quests available in the LT&T office.", "red");
+         return false;
+       }
+     }
+     if(!__have_telegram()){
+       print("We should have a plaintive telegram by now, something is wrong.", "red");
+       return false;
+     }
 
-    int stage_count = get_property("lttQuestStageCount").to_int();
-    string current_stage = get_property("questLTTQuestByWire");
+     int stage_count = get_property("lttQuestStageCount").to_int();
+     string current_stage = get_property("questLTTQuestByWire");
 
-    if($strings[step1, step2, step3, started] contains current_stage && (current_stage != "step3" || stage_count < 9)){
-      repeat{
-        adventure(1, $location[Investigating a Plaintive Telegram]);
-        stage_count = get_property("lttQuestStageCount").to_int();
-        current_stage = get_property("questLTTQuestByWire");
-      } until(current_stage == "step3" && stage_count == 9);
-    }
+     if($strings[step1, step2, step3, started] contains current_stage && (current_stage != "step3" || stage_count < 9)){
+       repeat{
+         adventure(1, $location[Investigating a Plaintive Telegram]);
+         stage_count = get_property("lttQuestStageCount").to_int();
+         current_stage = get_property("questLTTQuestByWire");
+       } until(current_stage == "step3" && stage_count == 9);
+     }
 
-    print("LT&T boss is up next.");
-    if(should_fight_boss){
-      __fight_boss(should_prepare_for_boss);
-      stage_count = get_property("lttQuestStageCount").to_int();
-      current_stage = get_property("questLTTQuestByWire");
+     print("LT&T boss is up next.");
+     if(should_fight_boss){
+       __fight_boss(should_prepare_for_boss);
+       stage_count = get_property("lttQuestStageCount").to_int();
+       current_stage = get_property("questLTTQuestByWire");
 
-      if(current_stage == "step3"){
-        print("I dont think we won that fight, sorry!", "red");
-        return false;
-      } else{
-        print("Completed LT&T office quest.", "green");
-        return true;
-      }
-    } else{
-      __print_boss_hint(__determine_boss());
-      print("When you are ready to fight the boss you can run the script again.", "green");
-      return false;
-    }
-  } else{
-    print("LT&T Office inaccessible?", "red");
-    return false;
-  }
-}
+       if(current_stage == "step3"){
+         print("I dont think we won that fight, sorry!", "red");
+         return false;
+       } else{
+         print("Completed LT&T office quest.", "green");
+         return true;
+       }
+     } else{
+       __print_boss_hint(__determine_boss());
+       print("When you are ready to fight the boss you can run the script again.", "green");
+       return false;
+     }
+   } else{
+     print("LT&T Office inaccessible?", "red");
+     return false;
+   }
+ }
 
 /*
  * Accept overtime if one is available. Will prompt for user confirmation
@@ -200,6 +206,7 @@ boolean do_ltt_office_quest_easy(boolean should_prepare_for_boss, boolean should
  * returns the number of Inflatable LT&T telegraph office purchased
  */
 int buy_all_inflatable_ltt_office(){
+  print("Checking if Inflatable LT&T telegraph office are affordable.");
   item inflatable = $item[Inflatable LT&T telegraph office];
   int dimes_needed = sell_price(inflatable.seller, inflatable);
   int bought = 0;
@@ -219,6 +226,7 @@ int buy_all_inflatable_ltt_office(){
  * (you cant afford one, dont have access to the LT&T office, etc)
  */
 boolean buy_one_inflatable_ltt_office(){
+  print("Checking if Inflatable LT&T telegraph office are affordable.");
   item inflatable = $item[Inflatable LT&T telegraph office];
   int dimes_needed = sell_price(inflatable.seller, inflatable);
   if(__ltt_office_available() && inflatable.seller.available_tokens >= dimes_needed){
@@ -240,7 +248,8 @@ void __print_help(){
 <b>--no-prep</b> - by default telegram will optimize equipment and buffs before the boss fight (which could be expensive and overly cautious), with this flag set, the script assumes you have already set up appropriate buffs and equipment to complete the fight. \
 <b>--no-boss</b> - by default telegram will try to fight the boss, you can have the script stop at the boss by setting this flag \
 <b>--spend-dimes</b> - tries to buy Inflatable LT&T telegraph office with buffalo dimes. Note this runs after completing the quest, you cant run telegram with just this flag just to have it buy inflatables, it will always attempt to do a quest first. \
-<b>difficulty</b> - desired quest difficulty. Case insensitive. Not required if a telegram quest has already been started. Can be one of:\
+<b>difficulty</b> - desired quest difficulty. Case insensitive. Not required if \
+a telegram quest has already been started. Can be one of:\
 <ul><li>easy, 1 - do easy quest</li> \
 <li>medium, 2 - do medium quest</li>\
 <li>hard, 3 - do hard quest</li></ul>");
