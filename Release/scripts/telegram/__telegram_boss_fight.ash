@@ -10,7 +10,7 @@ static boolean[item] HOT_RES_EFFECT_ITEMS = $items[SPF 451 lip balm, drop of wat
 static boolean[item] SPOOKY_RES_EFFECT_ITEMS = $items[black eyedrops, lotion of stench, spooky sap, lotion of hotness, ectoplasmic orbs, marzipan skull, spooky powder];
 static boolean[skill] ELEM_RES_EFFECT_BUFFS = $skills[Elemental Saucesphere, Astral Shell];
 
-static boolean[item] STAT_BUFF_ITEMS = $items[tomato juice of powerful power, potion of temporary gr8ness, Ferrigno's Elixir of Power, philter of phorce, Trivial Avocations Cards: What?, Trivial Avocations Cards: When?, Trivial Avocations Cards: Where?, Trivial Avocations Cards: Who?]
+static boolean[item] STAT_BUFF_ITEMS = $items[tomato juice of powerful power, potion of temporary gr8ness, Ferrigno's Elixir of Power, philter of phorce, Trivial Avocations Card: What?, Trivial Avocations Card: When?, Trivial Avocations Card: Where?, Trivial Avocations Card: Who?];
 
 static item[string] UNUSUAL_CONSTRUCT_DISC_MAP = {
   "BE": $item[strange disc (green)],
@@ -56,7 +56,7 @@ static boolean[item] BLUNT_WEAPONS;
 static{
   if(!file_to_map("data/telegram_blunt_weapons.txt", BLUNT_WEAPONS)){
     print("telegram was unable to load the blunt weapons file. Continuing.");
-  };
+  }
 }
 
  /*
@@ -107,7 +107,7 @@ string __ltt_boss_fight_filter(int round, monster opp, string text){
       color = translation.group(1);
     }
 
-    if (color = "" || !(UNUSUAL_CONSTRUCT_DISC_MAP contains color)){
+    if (color == "" || !(UNUSUAL_CONSTRUCT_DISC_MAP contains color)){
       print("Wasnt able to extract a knowns color from combat.");
       print("Extracted color: " + color);
       print(text);
@@ -311,7 +311,7 @@ boolean __fight_boss(boolean should_prepare){
   if(should_prepare){
     prepare_for_trouble(boss);
   } else{
-    print("Trusting that you have already prepared yourself for this battle")
+    print("Trusting that you have already prepared yourself for this battle");
   }
   adventure(1, $location[Investigating a Plaintive Telegram], "__ltt_boss_fight_filter");
   return true;

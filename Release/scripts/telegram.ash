@@ -220,7 +220,7 @@ boolean buy_one_inflatable_ltt_office(){
 }
 
 void __print_help(){
-  print_html("<b>usage</b>: telegram [help|h] difficulty [-n|--no-prep]\
+  print_html("<b>usage</b>: telegram [--help|-h] [-n|--no-prep] difficulty \
 <p/><b>help</b>, <b>h</b> - display this usage message and exit\
 <b>-n</b>, <b>--no-prep</b> - by default telegram will optimize equipment and buffs before \
 the boss fight (which could be expensive and overly cautious), with this flag set, \
@@ -243,8 +243,8 @@ void main(string args){
   foreach key, argument in args.split_string(" "){
 		argument = argument.to_lower_case();
     switch(argument){
-      case "help":
-      case "h":
+      case "--help":
+      case "-h":
         __print_help();
         return;
       case "easy":
