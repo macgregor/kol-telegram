@@ -6,6 +6,8 @@ import <telegram/__telegram_boss_fight.ash>;
 /*
  * Public interface, other ash scripts can safely import and call these methods
  */
+static string telegram_version = "0.1";
+
 boolean accept_overtime();
 int buy_all_inflatable_ltt_office();
 int buy_one_inflatable_ltt_office();
@@ -219,9 +221,16 @@ boolean buy_one_inflatable_ltt_office(){
   return false;
 }
 
+void __print_version(){
+  print("telegram v" + telegram_version);
+}
+
 void __print_help(){
-  print_html("<b>usage</b>: telegram [--help|-h] [-n|--no-prep] difficulty \
+  __print_version();
+  print("");
+  print_html("<b>usage</b>: telegram [--help|-h] [-n|--no-prep] [-v|--version] difficulty \
 <p/><b>help</b>, <b>h</b> - display this usage message and exit\
+<b>-v</b>, <b>--version</b> - display version and exit\
 <b>-n</b>, <b>--no-prep</b> - by default telegram will optimize equipment and buffs before \
 the boss fight (which could be expensive and overly cautious), with this flag set, \
 the script assumes you have already set up an appropriate mood/outfit to complete the fight. \
@@ -247,6 +256,11 @@ void main(string args){
       case "-h":
         __print_help();
         return;
+      case "-v":
+      case "--version":
+        __print_version();
+        return;
+        break;
       case "easy":
       case to_string(ACCEPT_EASY_QUEST):
         difficulty = ACCEPT_EASY_QUEST;
@@ -268,6 +282,8 @@ void main(string args){
         __print_help();
     }
   }
+
+  __print_version();
 
   if(difficulty < ACCEPT_EASY_QUEST || difficulty > ACCEPT_HARD_QUEST){
     abort("Invalid quest difficulty provided: " + difficulty);
