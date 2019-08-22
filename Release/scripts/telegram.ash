@@ -229,7 +229,7 @@ void __print_help(){
   __print_version();
   print("");
   print_html("<b>usage</b>: telegram [--help|-h] [-n|--no-prep] [-v|--version] difficulty \
-<p/><b>help</b>, <b>h</b> - display this usage message and exit\
+<p/><b>-h</b>, <b>--help</b> - display this usage message and exit\
 <b>-v</b>, <b>--version</b> - display version and exit\
 <b>-n</b>, <b>--no-prep</b> - by default telegram will optimize equipment and buffs before \
 the boss fight (which could be expensive and overly cautious), with this flag set, \
