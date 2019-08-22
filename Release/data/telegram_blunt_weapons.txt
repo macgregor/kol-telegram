@@ -1,156 +1,156 @@
-Breadchucks
-Bucket of anniversary lard
-Carrot-on-a-stick
-Chelonian Morningstar
-Combat fan
-Deathchucks
-Duck-on-a-string
-Fire poi
-Flail of the Seven Aspects
-Fleetwood chain
-Frozen nunchaku
-Giant driftwood sculpture
-Gnollish nunchaku
-Haunted paddle-ball
-IFlail
-Lucky ball-and-chain
-Plastic nunchaku
-Roboduck-on-a-string
-Sewer snake
-Shooting morning star
-Soup-chucks
-Spooky bicycle chain
-Third-hand nunchaku
-Underworld flail
-Vampire duck-on-a-string
-Velcro paddle ball
-Weighted paperclip chain
-Whittled flail
-Wiffle-flail
-Amok putter
-Ancient stone fist
-Astral bludgeon
-Astral mace
-Bad-ass club
-Balanced antler
-Bjorn's Hammer
-Blammer
-Blunt icepick
-Bone crusher
-Boxing glove on a spring
-BRICKO sword
-Brimstone Bludgeon
-Can of maces
-Candy crowbar
-Cast-iron legacy paddle
-Cheer extractor
-Chocolate cow bone
-Clock-cleaning hammer
-Clown hammer
-Stunning
-Club of corruption
-Club of the five seasons
-Contract enforcement stick
-Corrupt club of corrupt corruption
-Corrupt club of corruption
-Creepy-ass club
-Crimbomination Contraption
-Crowbar
-Curmudgel
-Deadfall branch
-Debonair deboner
-Decaying wooden oar
-Dented scepter
-Depleted Grimacite hammer
-Depleted Grimacite kneecapping stick
-Diamond-studded cane
-Elegant nightstick
-Elevenderizing hammer
-Evil-ass club
-Exclusive club
-Fetus-smashing club
-Flaming crutch
-Flamingo mallet
-Fluorescent lightbulb
-Foot-long hot daub
-Frigid-ass club
-Frosty's nailbat
-Frozen seal spine
-Ghast iron cleaver
-Giant foam finger
-Giant spider leg
-Giant turkey leg
-Gingerbread gavel
-Gnawed-up dog bone
-Gnollish flyswatter
-Hammer of Smiting
-Hammerus
-Heavy leather-bound tome
-Heteroerotic frat-paddle
-Hilarious comedy prop
-Hodgman's whackin' stick
-Hot-ass club
-Hothammer
-Immense cyborg hand
-Infernal toilet brush
-Inflatable baseball bat
-Kneecapping stick
-KoL Con Cinco Piñata Bat
-Law-abiding citizen cane
-Lawn dart
-Lead pipe
-LyleCo premium magnifying glass
-Mafia violin case
-Mannequin leg
-Maxwell's Silver Hammer
-Mayor Ghost's gavel
-Meat Tenderizer is Murder
-Mer-kin finpaddle
-Nasty-ass club
-Negotiatin' hammer
-Non-stick pugil stick
-Old dry bone
-Orcish frat-paddle
-Oversized pipe
-Pair of bolt cutters
-Parasitic claw
-Pener's drumstick
-Perforated battle paddle
-Pernicious cudgel
-Pipe wrench
-Plexiglass pikestaff
-Porcelain police baton
-Pottery club
-Protection stick
-Red hot poker
-Reindeer hammer
-Remaindered axe
-Right bear arm
-Rusted-out shootin' iron
-Rusty piece of rebar
-Seal-clubbing club
-Severed flipper
-Skate board
-Skeleton bone
-Sledgehammer of the V&aelig;lkyr
-Slime-covered club
-Spiked femur
-Stainless steel shillelagh
-Steel drivin' hammer
-Stuffed club
-Sugar shillelagh
-Throwing wrench
-Trusty torch
-Uncle Hobo's highest bough
-Underworld truncheon
-Unionize The Elves sign
-VYKEA hex key
-Worm-riding hooks
-17-alarm Saucepan
-5-Alarm Saucepan
-Frying brainpan
-Oil pan
-Saucepan
-Saucepanic
-Warbear oil pan
-Windsor Pan of the Source
+Breadchucks	true
+Bucket of anniversary lard	true
+Carrot-on-a-stick	true
+Chelonian Morningstar	true
+Combat fan	true
+Deathchucks	true
+Duck-on-a-string	true
+Fire poi	true
+Flail of the Seven Aspects	true
+Fleetwood chain	true
+Frozen nunchaku	true
+Giant driftwood sculpture	true
+Gnollish nunchaku	true
+Haunted paddle-ball	true
+IFlail	true
+Lucky ball-and-chain	true
+Plastic nunchaku	true
+Roboduck-on-a-string	true
+Sewer snake	true
+Shooting morning star	true
+Soup-chucks	true
+Spooky bicycle chain	true
+Third-hand nunchaku	true
+Underworld flail	true
+Vampire duck-on-a-string	true
+Velcro paddle ball	true
+Weighted paperclip chain	true
+Whittled flail	true
+Wiffle-flail	true
+Amok putter	true
+Ancient stone fist	true
+Astral bludgeon	true
+Astral mace	true
+Bad-ass club	true
+Balanced antler	true
+Bjorn's Hammer	true
+Blammer	true
+Blunt icepick	true
+Bone crusher	true
+Boxing glove on a spring	true
+BRICKO sword	true
+Brimstone Bludgeon	true
+Can of maces	true
+Candy crowbar	true
+Cast-iron legacy paddle	true
+Cheer extractor	true
+Chocolate cow bone	true
+Clock-cleaning hammer	true
+Clown hammer	true
+Stunning	true
+Club of corruption	true
+Club of the five seasons	true
+Contract enforcement stick	true
+Corrupt club of corrupt corruption	true
+Corrupt club of corruption	true
+Creepy-ass club	true
+Crimbomination Contraption	true
+Crowbar	true
+Curmudgel	true
+Deadfall branch	true
+Debonair deboner	true
+Decaying wooden oar	true
+Dented scepter	true
+Depleted Grimacite hammer	true
+Depleted Grimacite kneecapping stick	true
+Diamond-studded cane	true
+Elegant nightstick	true
+Elevenderizing hammer	true
+Evil-ass club	true
+Exclusive club	true
+Fetus-smashing club	true
+Flaming crutch	true
+Flamingo mallet	true
+Fluorescent lightbulb	true
+Foot-long hot daub	true
+Frigid-ass club	true
+Frosty's nailbat	true
+Frozen seal spine	true
+Ghast iron cleaver	true
+Giant foam finger	true
+Giant spider leg	true
+Giant turkey leg	true
+Gingerbread gavel	true
+Gnawed-up dog bone	true
+Gnollish flyswatter	true
+Hammer of Smiting	true
+Hammerus	true
+Heavy leather-bound tome	true
+Heteroerotic frat-paddle	true
+Hilarious comedy prop	true
+Hodgman's whackin' stick	true
+Hot-ass club	true
+Hothammer	true
+Immense cyborg hand	true
+Infernal toilet brush	true
+Inflatable baseball bat	true
+Kneecapping stick	true
+KoL Con Cinco Piñata Bat	true
+Law-abiding citizen cane	true
+Lawn dart	true
+Lead pipe	true
+LyleCo premium magnifying glass	true
+Mafia violin case	true
+Mannequin leg	true
+Maxwell's Silver Hammer	true
+Mayor Ghost's gavel	true
+Meat Tenderizer is Murder	true
+Mer-kin finpaddle	true
+Nasty-ass club	true
+Negotiatin' hammer	true
+Non-stick pugil stick	true
+Old dry bone	true
+Orcish frat-paddle	true
+Oversized pipe	true
+Pair of bolt cutters	true
+Parasitic claw	true
+Pener's drumstick	true
+Perforated battle paddle	true
+Pernicious cudgel	true
+Pipe wrench	true
+Plexiglass pikestaff	true
+Porcelain police baton	true
+Pottery club	true
+Protection stick	true
+Red hot poker	true
+Reindeer hammer	true
+Remaindered axe	true
+Right bear arm	true
+Rusted-out shootin' iron	true
+Rusty piece of rebar	true
+Seal-clubbing club	true
+Severed flipper	true
+Skate board	true
+Skeleton bone	true
+Sledgehammer of the V&aelig;lkyr	true
+Slime-covered club	true
+Spiked femur	true
+Stainless steel shillelagh	true
+Steel drivin' hammer	true
+Stuffed club	true
+Sugar shillelagh	true
+Throwing wrench	true
+Trusty torch	true
+Uncle Hobo's highest bough	true
+Underworld truncheon	true
+Unionize The Elves sign	true
+VYKEA hex key	true
+Worm-riding hooks	true
+17-alarm Saucepan	true
+5-Alarm Saucepan	true
+Frying brainpan	true
+Oil pan	true
+Saucepan	true
+Saucepanic	true
+Warbear oil pan	true
+Windsor Pan of the Source	true

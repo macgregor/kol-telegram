@@ -54,7 +54,7 @@ static item[string] UNUSUAL_CONSTRUCT_DISC_MAP = {
 
 static boolean[item] BLUNT_WEAPONS;
 static{
-  if(!file_to_map("data/telegram_blunt_weapons.txt", BLUNT_WEAPONS)){
+  if(!file_to_map("telegram_blunt_weapons.txt", BLUNT_WEAPONS)){
     print("telegram was unable to load the blunt weapons file. Continuing.");
   }
 }
