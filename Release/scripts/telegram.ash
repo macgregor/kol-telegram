@@ -77,61 +77,61 @@ int __overtime_cost(string ltt_office_page){
  *
  * returns true if it was able to complete an LT&T quest, false otherwise
  */
- boolean __do_ltt_office_quest(int difficulty, boolean should_prepare_for_boss, boolean should_fight_boss){
-   if(__ltt_office_available()){
-     cli_execute("refresh inv");
-     if(!__have_telegram() || get_property("questLTTQuestByWire") == "unstarted"){
-       if(__overtime_available(__visit_ltt_office()) && !accept_overtime()){
-         print("Wasnt able to take on overtime quest", "red");
-         return false;
-       }
-       if(__ltt_quests_available(__visit_ltt_office())){
-         print("Accepting quest");
-         run_choice(difficulty);
-       } else{
-         print("There dont seem to be any telegram quests available in the LT&T office.", "red");
-         return false;
-       }
-     }
-     if(!__have_telegram()){
-       print("We should have a plaintive telegram by now, something is wrong.", "red");
+boolean __do_ltt_office_quest(int difficulty, boolean should_prepare_for_boss, boolean should_fight_boss){
+ if(__ltt_office_available()){
+   cli_execute("refresh inv");
+   if(!__have_telegram() || get_property("questLTTQuestByWire") == "unstarted"){
+     if(__overtime_available(__visit_ltt_office()) && !accept_overtime()){
+       print("Wasnt able to take on overtime quest", "red");
        return false;
      }
-
-     int stage_count = get_property("lttQuestStageCount").to_int();
-     string current_stage = get_property("questLTTQuestByWire");
-
-     if($strings[step1, step2, step3, started] contains current_stage && (current_stage != "step3" || stage_count < 9)){
-       repeat{
-         adventure(1, $location[Investigating a Plaintive Telegram]);
-         stage_count = get_property("lttQuestStageCount").to_int();
-         current_stage = get_property("questLTTQuestByWire");
-       } until(current_stage == "step3" && stage_count == 9);
-     }
-
-     print("LT&T boss is up next.");
-     if(should_fight_boss){
-       __fight_boss(should_prepare_for_boss);
-       stage_count = get_property("lttQuestStageCount").to_int();
-       current_stage = get_property("questLTTQuestByWire");
-
-       if(current_stage == "step3"){
-         print("I dont think we won that fight, sorry!", "red");
-         return false;
-       } else{
-         print("Completed LT&T office quest.", "green");
-         return true;
-       }
+     if(__ltt_quests_available(__visit_ltt_office())){
+       print("Accepting quest");
+       run_choice(difficulty);
      } else{
-       __print_boss_hint(__determine_boss());
-       print("When you are ready to fight the boss you can run the script again.", "green");
+       print("There dont seem to be any telegram quests available in the LT&T office.", "red");
        return false;
      }
-   } else{
-     print("LT&T Office inaccessible?", "red");
+   }
+   if(!__have_telegram()){
+     print("We should have a plaintive telegram by now, something is wrong.", "red");
      return false;
    }
+
+   int stage_count = get_property("lttQuestStageCount").to_int();
+   string current_stage = get_property("questLTTQuestByWire");
+
+   if($strings[step1, step2, step3, started] contains current_stage && (current_stage != "step3" || stage_count < 9)){
+     repeat{
+       adventure(1, $location[Investigating a Plaintive Telegram]);
+       stage_count = get_property("lttQuestStageCount").to_int();
+       current_stage = get_property("questLTTQuestByWire");
+     } until(current_stage == "step3" && stage_count == 9);
+   }
+
+   print("LT&T boss is up next.");
+   if(should_fight_boss){
+     __fight_boss(should_prepare_for_boss);
+     stage_count = get_property("lttQuestStageCount").to_int();
+     current_stage = get_property("questLTTQuestByWire");
+
+     if(current_stage == "step3"){
+       print("I dont think we won that fight, sorry!", "red");
+       return false;
+     } else{
+       print("Completed LT&T office quest.", "green");
+       return true;
+     }
+   } else{
+     __print_boss_hint(__determine_boss());
+     print("When you are ready to fight the boss you can run the script again.", "green");
+     return false;
+   }
+ } else{
+   print("LT&T Office inaccessible?", "red");
+   return false;
  }
+}
 
 /*
  * Accept overtime if one is available. Will prompt for user confirmation
