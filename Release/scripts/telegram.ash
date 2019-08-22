@@ -234,7 +234,7 @@ void __print_version(){
 void __print_help(){
   __print_version();
   print("");
-  print_html("<b>usage</b>: telegram [-h|--help] [-v|--version] [--no-prep] [--no-boss] [difficulty] \
+  print_html("<b>usage</b>: telegram [-h|--help] [-v|--version] [--no-prep] [--no-boss] [--spend-dimes] [difficulty] \
 <p/><b>-h</b>, <b>--help</b> - display this usage message and exit\
 <b>-v</b>, <b>--version</b> - display version and exit\
 <b>--no-prep</b> - by default telegram will optimize equipment and buffs before \
@@ -243,6 +243,8 @@ the script assumes you have already set up appropriate buffs and equipment to \
 complete the fight. \
 <b>--no-boss</b> - by default telegram will try to fight the boss, you can have \
 the script stop at the boss by setting this flag \
+<b>--spend-dimes</b> - tries to buy Inflatable LT&T telegraph office with \
+buffalo dimes \
 <b>difficulty</b> - desired quest difficulty. Case insensitive. Not required if \
 a telegram quest has already been started. Can be one of:\
 <ul><li>easy, 1 - do easy quest</li> \
@@ -259,6 +261,7 @@ void main(string args){
   int difficulty = get_property("lttQuestDifficulty").to_int();
   boolean should_prepare_for_boss = true;
   boolean should_fight_boss = true;
+  boolean should_spend_dimes = false;
 
   foreach key, argument in args.split_string(" "){
 		argument = argument.to_lower_case();
@@ -289,6 +292,9 @@ void main(string args){
       case "--no-boss":
         should_fight_boss = false;
         break;
+      case "--spend-dimes":
+        sounld_spend_dimes = true;
+        break;
       default:
         print("Unexpected argument: " + argument, "red");
         __print_help();
@@ -301,4 +307,8 @@ void main(string args){
     abort("Invalid quest difficulty provided: " + difficulty);
   }
   __do_ltt_office_quest(difficulty, should_prepare_for_boss, should_fight_boss);
+
+  if(should_spend_dimes){
+    buy_all_inflatable_ltt_office();
+  }
 }
