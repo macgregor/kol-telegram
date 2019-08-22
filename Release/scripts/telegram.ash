@@ -237,18 +237,10 @@ void __print_help(){
   print_html("<b>usage</b>: telegram [-h|--help] [-v|--version] [--no-prep] [--no-boss] [--spend-dimes] [difficulty] \
 <p/><b>-h</b>, <b>--help</b> - display this usage message and exit\
 <b>-v</b>, <b>--version</b> - display version and exit\
-<b>--no-prep</b> - by default telegram will optimize equipment and buffs before \
-the boss fight (which could be expensive and overly cautious), with this flag set, \
-the script assumes you have already set up appropriate buffs and equipment to \
-complete the fight. \
-<b>--no-boss</b> - by default telegram will try to fight the boss, you can have \
-the script stop at the boss by setting this flag \
-<b>--spend-dimes</b> - tries to buy Inflatable LT&T telegraph office with \
-buffalo dimes. Note this runs after completing the quest, you cant run telegram \
-with just this flag just to have it buy inflatables, it will always attempt to \
-do a quest first. \
-<b>difficulty</b> - desired quest difficulty. Case insensitive. Not required if \
-a telegram quest has already been started. Can be one of:\
+<b>--no-prep</b> - by default telegram will optimize equipment and buffs before the boss fight (which could be expensive and overly cautious), with this flag set, the script assumes you have already set up appropriate buffs and equipment to complete the fight. \
+<b>--no-boss</b> - by default telegram will try to fight the boss, you can have the script stop at the boss by setting this flag \
+<b>--spend-dimes</b> - tries to buy Inflatable LT&T telegraph office with buffalo dimes. Note this runs after completing the quest, you cant run telegram with just this flag just to have it buy inflatables, it will always attempt to do a quest first. \
+<b>difficulty</b> - desired quest difficulty. Case insensitive. Not required if a telegram quest has already been started. Can be one of:\
 <ul><li>easy, 1 - do easy quest</li> \
 <li>medium, 2 - do medium quest</li>\
 <li>hard, 3 - do hard quest</li></ul>");
