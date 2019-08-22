@@ -29,7 +29,7 @@ svn checkout https://github.com/macgregor/kol-telegram/trunk/Release/
 ```
 telegram v0.1
 
-usage: telegram [-h|--help] [-v|--version] [--no-prep] [--no-boss] difficulty
+usage: telegram [-h|--help] [-v|--version] [--no-prep] [--no-boss] [--spend-dimes] [difficulty]
 
 -h, --help - display this usage message and exit
 -v, --version - display version and exit
@@ -39,6 +39,8 @@ the script assumes you have already set up appropriate buffs and equipment to
 complete the fight.
 --no-boss - by default telegram will try to fight the boss, you can have
 the script stop at the boss by setting this flag
+--spend-dimes - tries to buy Inflatable LT&T telegraph office with
+buffalo dimes
 difficulty - desired quest difficulty. Case insensitive. Not required if
 a telegram quest has already been started. Can be one of:
   * easy, 1 - do easy quest
