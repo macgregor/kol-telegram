@@ -244,7 +244,9 @@ complete the fight. \
 <b>--no-boss</b> - by default telegram will try to fight the boss, you can have \
 the script stop at the boss by setting this flag \
 <b>--spend-dimes</b> - tries to buy Inflatable LT&T telegraph office with \
-buffalo dimes \
+buffalo dimes. Note this runs after completing the quest, you cant run telegram \
+with just this flag just to have it buy inflatables, it will always attempt to \
+do a quest first. \
 <b>difficulty</b> - desired quest difficulty. Case insensitive. Not required if \
 a telegram quest has already been started. Can be one of:\
 <ul><li>easy, 1 - do easy quest</li> \

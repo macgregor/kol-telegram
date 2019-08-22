@@ -27,6 +27,8 @@ svn checkout https://github.com/macgregor/kol-telegram/trunk/Release/
 **gcli**
 
 ```
+> telegram -h
+
 telegram v0.1
 
 usage: telegram [-h|--help] [-v|--version] [--no-prep] [--no-boss] [--spend-dimes] [difficulty]
@@ -40,7 +42,9 @@ complete the fight.
 --no-boss - by default telegram will try to fight the boss, you can have
 the script stop at the boss by setting this flag
 --spend-dimes - tries to buy Inflatable LT&T telegraph office with
-buffalo dimes
+buffalo dimes. Note this runs after completing the quest, you cant run telegram
+with just this flag just to have it buy inflatables, it will always attempt to
+do a quest first
 difficulty - desired quest difficulty. Case insensitive. Not required if
 a telegram quest has already been started. Can be one of:
   * easy, 1 - do easy quest
