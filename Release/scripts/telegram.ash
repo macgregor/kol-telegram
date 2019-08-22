@@ -234,15 +234,17 @@ void __print_version(){
 void __print_help(){
   __print_version();
   print("");
-  print_html("<b>usage</b>: telegram [-h|--help] [-v|--version] [--no-prep] [--no-boss] difficulty \
+  print_html("<b>usage</b>: telegram [-h|--help] [-v|--version] [--no-prep] [--no-boss] [difficulty] \
 <p/><b>-h</b>, <b>--help</b> - display this usage message and exit\
 <b>-v</b>, <b>--version</b> - display version and exit\
 <b>--no-prep</b> - by default telegram will optimize equipment and buffs before \
 the boss fight (which could be expensive and overly cautious), with this flag set, \
-the script assumes you have already set up an appropriate mood\/outfit to complete the fight. \
-<b>--no-boss</b> - by default telegram will try to fight the boss, you can have the script
-stop at the boss by setting this flag \
-<b>difficulty</b> - desired quest difficulty. Case insensitive. Can be one of:\
+the script assumes you have already set up appropriate buffs and equipment to \
+complete the fight. \
+<b>--no-boss</b> - by default telegram will try to fight the boss, you can have \
+the script stop at the boss by setting this flag \
+<b>difficulty</b> - desired quest difficulty. Case insensitive. Not required if \
+a telegram quest has already been started. Can be one of:\
 <ul><li>easy, 1 - do easy quest</li> \
 <li>medium, 2 - do medium quest</li>\
 <li>hard, 3 - do hard quest</li></ul>");
@@ -254,7 +256,7 @@ void main(string args){
 		return;
 	}
 
-  int difficulty = 0;
+  int difficulty = get_property("lttQuestDifficulty").to_int();
   boolean should_prepare_for_boss = true;
   boolean should_fight_boss = true;
 
