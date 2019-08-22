@@ -34,6 +34,12 @@ static int ACCEPT_EASY_QUEST = 1;
 static int ACCEPT_MEDIUM_QUEST = 2;
 static int ACCEPT_HARD_QUEST = 3;
 static int LEAVE_OFFICE = 8;
+static int ACCEPT_OVERTIME = 4; // ?? not sure what choice is
+
+
+boolean __page_contains(string url, string text){
+  return contains_text(visit_url(url), text);
+}
 
 string __available_quest(string ltt_office_page, monster[string] possible_quests){
   foreach q in possible_quests {
@@ -45,12 +51,12 @@ string __available_quest(string ltt_office_page, monster[string] possible_quests
   return "";
 }
 
-boolean __page_contains(string url, string text){
-  return contains_text(visit_url(url), text);
-}
-
 boolean __ltt_office_available(){
   return __page_contains("place.php?whichplace=town_right", "lttoffice.gif");
+}
+
+boolean __ltt_quests_available(string ltt_office_page){
+  return __available_quest(ltt_office_page, EASY_QUESTS) != "" && __available_quest(ltt_office_page, MEDIUM_QUESTS) != "" && __available_quest(ltt_office_page, HARD_QUESTS) != "";
 }
 
 string __visit_ltt_office(){
@@ -70,21 +76,19 @@ boolean __have_telegram(){
   return item_amount($item[plaintive telegram]) > 0;
 }
 
-boolean __can_do_overtime(){
-  matcher m = create_matcher("Pay overtime", __visit_ltt_office());
-  __leave_ltt_office();
+boolean __overtime_available(string ltt_office_page){
+  matcher m = create_matcher("Pay overtime", ltt_office_page);
   return m.find();
 }
 
-/*
- * Prints the available quests to the gcli
- */
-void print_available_ltt_office_quests(){
-  string page = __visit_ltt_office();
-  __leave_ltt_office();
-  print("[1. Easy] " + __available_quest(page, EASY_QUESTS));
-  print("[2. Medium] " + __available_quest(page, MEDIUM_QUESTS));
-  print("[3. Hard] " + __available_quest(page, HARD_QUESTS));
+int __overtime_cost(string ltt_office_page){
+  if(__overtime_available(ltt_office_page)){
+    matcher m = create_matcher("(Pay overtime \(.*?\))", ltt_office_page);
+    if(m.find()){
+      return extract_meat(m.group(1));
+    }
+  }
+  return -1;
 }
 
 /*
@@ -145,7 +149,9 @@ boolean __fight_boss(){
   }
 
   void prepare_for_trouble(monster boss){
+    print("Preparing to fight LT&T quest boss: " + boss, "blue");
     if(boss == $monster[Granny Hackleton]){
+      print(boss + " - blocks attacks, skills, familiar actions and can only use combat items once each. Use buffs, equipment and items that deal passive damage over time.");
       foreach i in PASSIVE_DMG_COMBAT_ITEMS{
         if(item_amount(i) == 0){
           buy(1, i);
@@ -177,13 +183,15 @@ boolean __fight_boss(){
     }
 
     if(item_amount($item[Space Trip safety headphones]) > 0){
+      print("Equipping Space Trip safety headphones to make the fit a bit easier.");
       equip($slot[acc3], $item[Space Trip safety headphones]);
     }
   }
 
   monster boss = determine_boss();
   if(boss == $monster[none]){
-    abort("Not sure who the boss is, you're on your own partner.");
+    print("Not sure who the boss is, you're on your own partner.", "red");
+    return false;
   }
 
   prepare_for_trouble(boss);
@@ -195,15 +203,22 @@ boolean __fight_boss(){
  * Internal method, checks if the LT&T office is accessible, accepts a quest of
  * the choosen difficulty, adventures until the boss is up next then delegates to
  * __fight_boss() to finish the quest.
+ *
+ * returns true if it was able to complete an LT&T quest, false otherwise
  */
-void __do_ltt_office_quest(int difficulty){
+boolean __do_ltt_office_quest(int difficulty){
   if(__ltt_office_available()){
     if(!__have_telegram() || get_property("questLTTQuestByWire") == "unstarted"){
+      if(__overtime_available(__visit_ltt_office()) && !accept_overtime()){
+        print("Wasnt able to take on overtime quest", "red");
+        return false;
+      }
       __visit_ltt_office();
       run_choice(difficulty);
     }
     if(!__have_telegram()){
-      abort("We should have a plaintive telegram by now, something is wrong.");
+      print("We should have a plaintive telegram by now, something is wrong.", "red");
+      return false;
     }
 
     int stage_count = get_property("lttQuestStageCount").to_int();
@@ -217,23 +232,89 @@ void __do_ltt_office_quest(int difficulty){
       } until(current_stage == "step3" && stage_count == 9);
     }
 
-    print("boss up");
+    print("LT&T boss is up next.");
     __fight_boss();
+    stage_count = get_property("lttQuestStageCount").to_int();
+    current_stage = get_property("questLTTQuestByWire");
+
+    if(stage_count == "step3"){
+      print("I dont think we won that fight, sorry!", "red");
+      return false;
+    } else{
+      print("Completed LT&T office quest.", "green");
+      return true;
+    }
   } else{
     print("LT&T Office inaccessible?", "red");
+    return false;
   }
 }
 
-void do_ltt_office_quest_hard(){
-  __do_ltt_office_quest(ACCEPT_HARD_QUEST);
+/*
+ * Accept overtime if one is available. Will prompt for user confirmation
+ * if the overtime cost is above 10,000 meat (defaulting to not accept overtime
+ * after 10 seconds).
+ *
+ * returns true if overtime was available, accepted and there are now quests available
+ * for selection in the LT&T office. There could be available quests to choose
+ * from even if this method returns false (if you havent done the free quest yet for example)
+ */
+boolean accept_overtime(){
+  string page = __visit_ltt_office();
+  if(__overtime_available(page)){
+    int cost = __overtime_cost(page);
+    if(cost > 10000 && !user_confirm("Overtime will cost " + cost + " are you sure you want to spend this much?", 10000, false)){
+      print(cost + " is way too much to spend, sheesh.", false);
+      return false;
+    }
+    if(my_meat() < cost){
+      print("You cant afford " + cost + " for overtime.", "red");
+      return false;
+    }
+    run_choice(ACCEPT_OVERTIME);
+    boolean can_accept_quest = __ltt_quests_available(__visit_ltt_office());
+    __leave_ltt_office();
+    return can_accept_quest;
+  }
+  return false;
 }
 
-void do_ltt_office_quest_medium(){
-  __do_ltt_office_quest(ACCEPT_MEDIUM_QUEST);
+/*
+ * Prints the available quests to the gcli
+ */
+void print_available_ltt_office_quests(){
+  string page = __visit_ltt_office();
+  __leave_ltt_office();
+  print("[1. Easy] " + __available_quest(page, EASY_QUESTS));
+  print("[2. Medium] " + __available_quest(page, MEDIUM_QUESTS));
+  print("[3. Hard] " + __available_quest(page, HARD_QUESTS));
 }
 
-void do_ltt_office_quest_easy(){
-  __do_ltt_office_quest(ACCEPT_EASY_QUEST);
+/*
+ * Do Hard LT&T Office quest. Should be able to pick it up in any state of completion.
+ *
+ * returns true if the quest was completed successfully, false otherwise.
+ */
+boolean do_ltt_office_quest_hard(){
+  return __do_ltt_office_quest(ACCEPT_HARD_QUEST);
+}
+
+/*
+ * Do Medium LT&T Office quest. Should be able to pick it up in any state of completion.
+ *
+ * returns true if the quest was completed successfully, false otherwise.
+ */
+boolean do_ltt_office_quest_medium(){
+  return __do_ltt_office_quest(ACCEPT_MEDIUM_QUEST);
+}
+
+/*
+ * Do Easy LT&T Office quest. Should be able to pick it up in any state of completion.
+ *
+ * returns true if the quest was completed successfully, false otherwise.
+ */
+boolean do_ltt_office_quest_easy(){
+  return __do_ltt_office_quest(ACCEPT_EASY_QUEST);
 }
 
 void main(int difficulty){
