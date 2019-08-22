@@ -12,7 +12,6 @@ int buy_one_inflatable_ltt_office();
 void do_ltt_office_quest_easy();
 void do_ltt_office_quest_hard();
 void do_ltt_office_quest_medium();
-string ltt_boss_fight(int round, monster opp, string text);
 void print_available_ltt_office_quests();
 
 boolean __page_contains(string url, string text){
@@ -107,7 +106,7 @@ boolean __do_ltt_office_quest(int difficulty){
     stage_count = get_property("lttQuestStageCount").to_int();
     current_stage = get_property("questLTTQuestByWire");
 
-    if(stage_count == "step3"){
+    if(current_stage == "step3"){
       print("I dont think we won that fight, sorry!", "red");
       return false;
     } else{
@@ -211,7 +210,7 @@ int buy_all_inflatable_ltt_office(){
  * returns true if one Inflatable LT&T telegraph office was purchased, false if not
  * (you cant afford one, dont have access to the LT&T office, etc)
  */
-int buy_one_inflatable_ltt_office(){
+boolean buy_one_inflatable_ltt_office(){
   item inflatable = $item[Inflatable LT&T telegraph office];
   int dimes_needed = sell_price(inflatable.seller, inflatable);
   if(__ltt_office_available() && inflatable.seller.available_tokens >= dimes_needed){
@@ -221,40 +220,40 @@ int buy_one_inflatable_ltt_office(){
 }
 
 void __print_help(){
-  print("usage: telegram [help|h] difficuly");
-  print("");
-  print("help, h - display this usage message and exit");
-  print("difficulty - desired quest difficulty. Case insensitive. Can be one of:");
-  print("             easy, 1 - do easy quest");
-  print("             medium, 2 - do medium quest");
-  print("             hard, 3 - do hard quest");
+  print_html("<b>usage</b>: telegram [help|h] difficulty\
+\
+<b>help</b>, <b>h</b> - display this usage message and exit\
+<b>difficulty</b> - desired quest difficulty. Case insensitive. Can be one of:\
+<ul><li>easy, 1 - do easy quest</li> \
+<li>medium, 2 - do medium quest</li>\
+<li>hard, 3 - do hard quest</li></ul>");
 }
 
 void main(string args){
-  if (arguments_in == ""){
+  if (args == ""){
 		__print_help();
 		return;
 	}
 
-  foreach key, argument in arguments_in.split_string(" "){
+  foreach key, argument in args.split_string(" "){
 		argument = argument.to_lower_case();
     switch(argument){
       case "help":
-      case: "h":
+      case "h":
         __print_help();
         break;
       case "easy":
-      case ACCEPT_EASY_QUEST:
+      case to_string(ACCEPT_EASY_QUEST):
         do_ltt_office_quest_easy();
         break;
       case "medium":
-      case ACCEPT_MEDIUM_QUEST:
+      case to_string(ACCEPT_MEDIUM_QUEST):
         do_ltt_office_quest_medium();
         break;
       case "hard":
-      case ACCEPT_HARD_QUEST:
+      case to_string(ACCEPT_HARD_QUEST):
         do_ltt_office_quest_hard();
-        greak;
+        break;
       default:
         print("Unexpected argument: " + argument, "red");
         __print_help();
