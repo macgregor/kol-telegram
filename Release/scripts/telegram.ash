@@ -60,6 +60,9 @@ boolean __overtime_available(string ltt_office_page){
   return m.find();
 }
 
+/*
+<form style='margin: 0px 0px 0px 0px;' name=choiceform4 action=choice.php method=post><input type=hidden name=pwd value='pwhash'><input type=hidden name=whichchoice value=1171><input type=hidden name=option value=4><input  class=button type=submit value="Pay overtime (10,000 Meat)"></form><p><form style='margin: 0px 0px 0px 0px;' name=choiceform6 action=choice.php method=post><input type=hidden name=pwd value='pwhash'><input type=hidden name=whichchoice value=1171><input type=hidden name=option value=6><input  class=button type=submit value="Check out the Gift Shop"></form><p><form style='margin: 0px 0px 0px 0px;' name=choiceform8 action=choice.php method=post><input type=hidden name=pwd value='pwhash'><input type=hidden name=whichchoice value=1171><input type=hidden name=option value=8><input  class=button type=submit value="Leave">
+ */
 int __overtime_cost(string ltt_office_page){
   if(__overtime_available(ltt_office_page)){
     matcher m = create_matcher("(Pay overtime \(.*?\))", ltt_office_page);

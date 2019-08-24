@@ -86,7 +86,7 @@ string __ltt_boss_fight_filter(int round, monster opp, string text){
       if(!(combat_items_used contains i)){
         combat_items_used[i] = 1;
         if(!second){
-          use_item = "item i";
+          use_item = "item " + i;
           second = true;
         } else if(funksling){
           use_item += ", " + i;
