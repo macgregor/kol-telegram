@@ -2,7 +2,7 @@ import <__telegram_data.ash>;
 
 /* Passive Damage dealing stuff, used in Granny Hackleton boss fight */
 static boolean[item] PASSIVE_DMG_COMBAT_ITEMS = $items[gas can, old school beer pull tab, cold mashed potatoes, paint bomb, crazy hobo notebook, bag of gross foreign snacks, possessed tomato, hand grenegg, Colon Annihilation Hot Sauce, jagged scrap metal, jigsaw blade, throwing fork, dinner roll, whole turkey leg, skull with a fuse in it, nastygeist];
-static boolean[item] PASSIVE_DMG_EFFECT_ITEMS = $items[monkey barf, half-digested coal, beard incense, spooky sound effects record, glowing syringe];
+static boolean[item] PASSIVE_DMG_EFFECT_ITEMS = $items[half-digested coal, beard incense, spooky sound effects record, glowing syringe];
 static boolean[skill] PASSIVE_DMG_EFFECT_BUFFS = $skills[Jalape&ntilde;o Saucesphere, The Psalm of Pointiness, Scarysauce];
 static boolean[item] PASSIVE_DMG_EQUIPMENT = $items[double-ice cap, cup of infinite pencils, dubious loincloth, ironic oversized sunglasses, MagiMechTech NanoMechaMech, cannonball charrrm bracelet, ant pick, tiny bowler];
 
@@ -81,17 +81,17 @@ string __ltt_boss_fight_filter(int round, monster opp, string text){
   }
   if(opp == $monster[Granny Hackleton]){
     string use_item = "";
-    boolean second = false;
     foreach i in PASSIVE_DMG_COMBAT_ITEMS {
-      if(!(combat_items_used contains i)){
+      if(item_amount(i) > 0 && !(combat_items_used contains i)){
         combat_items_used[i] = 1;
-        if(!second){
+        if(use_item == ""){
           use_item = "item " + i;
-          second = true;
-        } else if(funksling){
-          use_item += ", " + i;
+          if(!funksling){
+            break;
+          }
         } else{
-
+          use_item += ", " + i;
+          break;
         }
       }
     }
